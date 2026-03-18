@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(node:*)",
+      "Bash(npm install:*)",
+      "Bash(source:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(xcrun devicectl:*)",
+      "Bash(~/.nvm/versions/node/v20.20.1/bin/npm install:*)",
+      "Bash(find:*)",
+      "Bash(sw_vers)",
+      "Bash(python3:*)",
+      "Bash(ls:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(curl:*)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}

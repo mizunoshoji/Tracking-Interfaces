@@ -1,0 +1,30 @@
+{
+  "document": {
+    "width": 1191,
+    "height": 842,
+    "note": "A3 landscape in pt"
+  },
+  "left_panel": {
+    "x": 0,
+    "y": 0,
+    "width": 640,
+    "height": 842,
+    "padding": 40,
+    "note": "visualization — viewport scaled to fit"
+  },
+  "divider": {
+    "x": 640.5,
+    "stroke_width": 0.5
+  },
+  "right_panel": {
+    "x": 641,
+    "y": 0,
+    "width": 550,
+    "height": 842,
+    "padding_x": 44,
+    "padding_y": 48,
+    "font_size": 7.8,
+    "line_height": 13.8,
+    "section_gap": 21.6
+  }
+}
