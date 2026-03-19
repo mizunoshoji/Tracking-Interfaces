@@ -384,7 +384,7 @@ export default function App() {
     if (item.type === 'title') {
       return (
         <View style={[styles.carouselPage, styles.titleCard]}>
-          <Text style={styles.titleCardText}>Tracking the Interface</Text>
+          <Text style={styles.titleCardText}>TouchPlot</Text>
         </View>
       );
     }
