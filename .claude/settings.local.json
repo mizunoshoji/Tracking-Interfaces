@@ -17,7 +17,14 @@
       "WebFetch(domain:api.github.com)",
       "Bash(curl:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(fc-list :lang=ja)"
+      "Bash(fc-list :lang=ja)",
+      "Bash(git restore:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(gh auth:*)",
+      "Bash(which git:*)",
+      "Bash(git push:*)",
+      "Bash(npx eas-cli:*)"
     ]
   }
 }
