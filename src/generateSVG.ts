@@ -52,27 +52,56 @@ function hatchLines(cx: number, cy: number, r: number, step: number): string[] {
   return ds;
 }
 
+// CJK・全角文字は 1em、ASCII は 0.6em で計測
+function charWidth(ch: string, fontSize: number): number {
+  const code = ch.codePointAt(0) ?? 0;
+  const isFullWidth =
+    (code >= 0x1100  && code <= 0x11FF)  || // Hangul Jamo
+    (code >= 0x2E80  && code <= 0x303F)  || // CJK Radicals / Symbols
+    (code >= 0x3040  && code <= 0x30FF)  || // Hiragana / Katakana
+    (code >= 0x3200  && code <= 0x9FFF)  || // CJK Enclosed / Unified
+    (code >= 0xAC00  && code <= 0xD7AF)  || // Hangul Syllables
+    (code >= 0xF900  && code <= 0xFAFF)  || // CJK Compat Ideographs
+    (code >= 0xFE10  && code <= 0xFE6F)  || // Vertical / Small Forms
+    (code >= 0xFF00  && code <= 0xFFEF)  || // Fullwidth Forms
+    (code >= 0x20000 && code <= 0x2A6DF);   // CJK Ext B
+  return fontSize * (isFullWidth ? 1.0 : 0.6);
+}
+
+function textWidth(text: string, fontSize: number): number {
+  return [...text].reduce((w, ch) => w + charWidth(ch, fontSize), 0);
+}
+
 function wrapLines(text: string, maxW: number, fontSize: number, maxLines = 2): string[] {
-  const charW = fontSize * 0.55;
   const result: string[] = [];
   let remaining = text.trim();
 
   while (remaining.length > 0 && result.length < maxLines) {
-    if (remaining.length * charW <= maxW) {
+    if (textWidth(remaining, fontSize) <= maxW) {
       result.push(remaining);
       break;
     }
     const isLast = result.length === maxLines - 1;
-    // Find break point: prefer last space within budget, fall back to char limit
-    const budget = Math.floor(maxW / charW);
-    const spaceIdx = remaining.lastIndexOf(' ', budget);
-    let breakAt = spaceIdx > 0 ? spaceIdx : budget;
+
+    // 1文字ずつ幅を積算してbreak位置を決定
+    let breakAt = 0;
+    let w = 0;
+    for (const ch of [...remaining]) {
+      if (w + charWidth(ch, fontSize) > maxW) break;
+      w += charWidth(ch, fontSize);
+      breakAt++;
+    }
+
+    // 英語ならスペース位置で折り返す
+    const slice = remaining.slice(0, breakAt);
+    const spaceIdx = slice.lastIndexOf(' ');
+    if (spaceIdx > Math.floor(breakAt * 0.5)) breakAt = spaceIdx;
+
     if (isLast) {
-      // Truncate with ellipsis
-      let line = remaining.slice(0, breakAt).trimEnd();
-      while (line.length > 0 && (line + '...').length * charW > maxW)
-        line = line.slice(0, -1).trimEnd();
-      result.push(line + '...');
+      let chars = [...remaining.slice(0, breakAt).trimEnd()];
+      while (chars.length > 0 && textWidth(chars.join('') + '...', fontSize) > maxW)
+        chars.pop();
+      result.push(chars.join('') + '...');
       break;
     }
     result.push(remaining.slice(0, breakAt).trimEnd());

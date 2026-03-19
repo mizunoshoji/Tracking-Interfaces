@@ -36,6 +36,9 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# centerline fonts (large binary — copy manually from plot-dm/centerline/fonts/)
+*.lff
+
 # generated native folders
 /ios
 /android

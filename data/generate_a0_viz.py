@@ -6,12 +6,12 @@ Stroke data scaled to fill A0 with padding.
 import sys, json, math
 from pathlib import Path
 
-sys.path.insert(0, '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline')
+BASE = Path(__file__).parent
+sys.path.insert(0, str(BASE))
 from recompose_stroke import parse_lff, glyph_for_char, advance_for_char
 
-BASE   = Path(__file__).parent
-FONT_PRIMARY  = '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline/fonts/azomix.lff'
-FONT_FALLBACK = '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline/fonts/unicode.lff'
+FONT_PRIMARY  = BASE / 'fonts' / 'azomix.lff'
+FONT_FALLBACK = BASE / 'fonts' / 'unicode.lff'
 
 CIRCLE_R     = 10.0        # larger circles for A0
 HATCH_STEP   = 3.2         # scaled hatch (~1.6 * A0_scale/A3_scale ratio)

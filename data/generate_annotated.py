@@ -8,17 +8,17 @@ import sys, json, math, re
 from pathlib import Path
 from datetime import datetime, timezone
 
-sys.path.insert(0, '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline')
+BASE = Path(__file__).parent
+sys.path.insert(0, str(BASE))
 from recompose_stroke import parse_lff, glyph_for_char, advance_for_char
 
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
-BASE          = Path(__file__).parent
 LAYOUT        = BASE / 'layout.json'
-FONT_PRIMARY  = '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline/fonts/azomix.lff'
-FONT_FALLBACK = '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline/fonts/unicode.lff'
-FONT_CODE     = '/Users/mizunoshoji/develop/sandbox/plot-dm/centerline/fonts/kst32b.lff'
+FONT_PRIMARY  = BASE / 'fonts' / 'azomix.lff'
+FONT_FALLBACK = BASE / 'fonts' / 'unicode.lff'
+FONT_CODE     = BASE / 'fonts' / 'kst32b.lff'
 
 CIRCLE_R     = 4.0
 HATCH_STEP   = 1.6

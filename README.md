@@ -240,7 +240,20 @@ Share SVGで書き出す前の内部データ構造。
 
 ## Pythonスクリプト（外部ツール）
 
-`data/` 以下のスクリプトはアプリとは独立した外部ツール。アプリから書き出したJSONを入力としてプロッター向けSVGを生成する。センターラインフォントレンダラー（`~/develop/sandbox/plot-dm/centerline/`）が必要。
+`data/` 以下のスクリプトはアプリとは独立した外部ツール。アプリから書き出したJSONを入力としてプロッター向けSVGを生成する。
+
+### フォントのセットアップ
+
+`.lff` フォントファイルは容量が大きいため git 管理外（`.gitignore`）。clone後に手動でコピーが必要。
+
+```bash
+# plot-dm リポジトリのフォントを data/fonts/ にコピー
+cp ~/develop/sandbox/plot-dm/centerline/fonts/azomix.lff  data/fonts/
+cp ~/develop/sandbox/plot-dm/centerline/fonts/unicode.lff data/fonts/
+cp ~/develop/sandbox/plot-dm/centerline/fonts/kst32b.lff  data/fonts/
+```
+
+`recompose_stroke.py`（センターラインフォントレンダラー）は `data/` 内に含まれているため別途インストール不要。
 
 ### `generate_annotated.py` — A3横向きアノテーションシート
 

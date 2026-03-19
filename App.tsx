@@ -332,6 +332,25 @@ export default function App() {
         { text: '可視化のみ（A4縦）',    onPress: () => showGraph(generateVizSVG) },
         { text: '情報のみ（A4縦）',      onPress: () => showGraph(generateInfoSVG) },
         { text: '可視化 + 情報（A3横）', onPress: () => showGraph(generateAnnotatedSVG) },
+        { text: 'JSONデータをエクスポート', onPress: async () => {
+            try {
+              const session  = buildSession();
+              const json     = JSON.stringify(session, null, 2);
+              const filename = `touch_${Date.now()}.json`;
+              const fileUri  = (FileSystem.cacheDirectory ?? 'file://tmp/') + filename;
+              await FileSystem.writeAsStringAsync(fileUri, json, {
+                encoding: FileSystem.EncodingType.UTF8,
+              });
+              await Sharing.shareAsync(fileUri, {
+                mimeType:    'application/json',
+                dialogTitle: 'Export Session (JSON)',
+                UTI:         'public.json',
+              });
+            } catch (e) {
+              Alert.alert('Export failed', String(e));
+            }
+          }
+        },
         { text: 'キャンセル', style: 'cancel' },
       ]
     );
