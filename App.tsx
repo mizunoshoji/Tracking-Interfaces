@@ -1,8 +1,10 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import {
   Alert,
+  Animated,
   Dimensions,
   FlatList,
+  Image,
   KeyboardAvoidingView,
   Modal,
   Platform,
@@ -81,6 +83,45 @@ type CarouselItem =
   | { type: 'info'; graph: CarouselGraph };
 
 // ---------------------------------------------------------------------------
+// TitleCard — fullscreen icon bg + flickering overlay + "TouchPlot" label
+// ---------------------------------------------------------------------------
+function TitleCard() {
+  const flickerOpacity = useRef(new Animated.Value(0.4)).current;
+
+  useEffect(() => {
+    let alive = true;
+    function step() {
+      if (!alive) return;
+      const toValue  = 0.25 + Math.random() * 0.45;   // 0.25 – 0.70
+      const duration = 200 + Math.random() * 400;      // 200 – 600 ms
+      Animated.timing(flickerOpacity, {
+        toValue,
+        duration,
+        easing: t => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t, // easeInOut quad
+        useNativeDriver: true,
+      }).start(({ finished }) => { if (finished) step(); });
+    }
+    step();
+    return () => { alive = false; };
+  }, [flickerOpacity]);
+
+  return (
+    <View style={[styles.carouselPage, { justifyContent: 'center', alignItems: 'center' }]}>
+      {/* Icon image: centered crop, fill width, max height */}
+      <Image
+        source={require('./assets/icon.png')}
+        style={{ width: SCREEN_W, height: SCREEN_H, position: 'absolute' }}
+        resizeMode="cover"
+      />
+      <Animated.View
+        style={[StyleSheet.absoluteFillObject, { backgroundColor: '#000', opacity: flickerOpacity }]}
+      />
+      <Text style={styles.titleCardText}>TouchPlot</Text>
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // App
 // ---------------------------------------------------------------------------
 export default function App() {
@@ -152,15 +193,15 @@ export default function App() {
   }, []);
 
   // -------------------------------------------------------------------------
-  // Carousel data: [title, code1, viz1, info1, title, code2, viz2, info2, ...]
+  // Carousel data: [title, viz1, info1, code1, title, viz2, info2, code2, ...]
   // -------------------------------------------------------------------------
   const carouselData: CarouselItem[] = carouselGraphs.length === 0
     ? [{ type: 'title' }]
     : carouselGraphs.flatMap(g => [
         { type: 'title' as const },
-        { type: 'code' as const, graph: g },
         { type: 'viz'  as const, graph: g },
         { type: 'info' as const, graph: g },
+        { type: 'code' as const, graph: g },
       ]);
 
   // -------------------------------------------------------------------------
@@ -382,11 +423,7 @@ export default function App() {
   // -------------------------------------------------------------------------
   const renderCarouselItem = ({ item }: { item: CarouselItem }) => {
     if (item.type === 'title') {
-      return (
-        <View style={[styles.carouselPage, styles.titleCard]}>
-          <Text style={styles.titleCardText}>TouchPlot</Text>
-        </View>
-      );
+      return <TitleCard />;
     }
     const svgContent =
       item.type === 'viz'  ? item.graph.vizSvg :
@@ -722,10 +759,9 @@ const styles = StyleSheet.create({
 
   // Carousel
   carouselPage: { width: SCREEN_W, flex: 1 },
-  titleCard:    { backgroundColor: '#111', justifyContent: 'center', alignItems: 'center' },
   titleCardText: {
-    color: '#fff', fontSize: 20, fontWeight: '300',
-    letterSpacing: 2, textAlign: 'center',
+    color: '#fff', fontSize: 28, fontWeight: '200',
+    letterSpacing: 6, textAlign: 'center',
   },
 
   // Toolbar
